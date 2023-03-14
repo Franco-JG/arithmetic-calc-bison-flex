@@ -3,6 +3,7 @@
 
 %{
 #include <stdlib.h>
+#include <string.h>
 void yyerror(char *);
 #include "bison.tab.h"
 %}
@@ -10,7 +11,8 @@ void yyerror(char *);
 %%
 [0-9]+      {
 				//se convierte a int el char de *yytext
-				yylval = atoi(yytext);
+				strcpy(yylval.id, yytext);
+				yylval.val = atoi(yytext);
 				return INTEGER;}
 
 [-+/*()]    {	

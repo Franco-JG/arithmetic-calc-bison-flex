@@ -4,26 +4,31 @@ int yylex(void);
 void yyerror(char *);
 %}
 
-%token INTEGER
+%union{
+        char id[20];
+        int val;
+}
+%token <val> INTEGER
+%type <val> expr term factor
 
 %%
 arithm_expr:
-        arithm_expr expr        { printf("%d\n", $2); }
+        arithm_expr expr        { printf("%d\n", $<val>2); }
         |
         ;
 expr:
-        term    { $$ = $1; }
-        | expr '+' term { $$ = $1 + $3; }
-        | expr '-' term { $$ = $1 - $3; }
+        term    { $<val>$ = $<val>1; }
+        | expr '+' term { $<val>$ = $<val>1 + $<val>3; }
+        | expr '-' term { $<val>$ = $<val>1 - $<val>3; }
         ;
 term:
-        term '*' factor { $$ = $1 * $3; }
-        | term '/' factor { $$ = $1 / $3; }
-        | factor
+        term '*' factor { $<val>$ = $<val>1 * $<val>3; }
+        | term '/' factor { $<val>$ = $<val>1 / $<val>3; }
+        | factor        
         ;
 factor:
-        INTEGER         { $$ = $1; }
-        | '('expr')'    { $$ = $2; }
+        INTEGER         { $<val>$ = $<val>1; }
+        | '('expr')'    { $<val>$ = $<val>2; }
         ;
 %%
 
